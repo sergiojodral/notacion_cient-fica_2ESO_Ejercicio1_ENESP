@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>2º ESO · Notación científica (Interactivo)</title>
+
+  <!-- MathJax (LaTeX) -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'], ['$', '$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --stroke:#e7e9f2;
+      --text:#0f172a;
+      --muted:#475569;
+      --accent:#2563eb;
+      --accent2:#16a34a;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --shadow: 0 12px 28px rgba(15,23,42,.08);
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 420px at 18% 10%, rgba(37,99,235,.10), transparent 60%),
+        radial-gradient(800px 380px at 88% 18%, rgba(22,163,74,.08), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+      padding: 22px 14px 34px;
+    }
+    .wrap{ max-width: 980px; margin: 0 auto; }
+
+    header{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 16px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    h1{ margin:0; font-size: 1.35rem; letter-spacing:.2px; }
+    .subtitle{ margin:6px 0 0; color: var(--muted); line-height:1.35; font-size:.98rem; }
+
+    .rightCol{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
+      min-width: 210px;
+    }
+
+    .topBtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 8px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .stats{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .statPill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 6px 16px rgba(15,23,42,.05);
+      font-weight: 900;
+      font-size:.92rem;
+      color: var(--muted);
+      user-select:none;
+      white-space:nowrap;
+    }
+    .statPill b{ color: var(--text); }
+    .statOk{ border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.06); }
+    .statBad{ border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.06); }
+
+    button{
+      border:1px solid var(--stroke);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 800;
+      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 6px 16px rgba(15,23,42,.06);
+      position: relative;
+      z-index: 5;
+      pointer-events: auto;
+      touch-action: manipulation;
+    }
+    button:hover{ border-color:#d8dbea; }
+    button:active{ transform: scale(.99); }
+    button:disabled{
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .primary{
+      background: linear-gradient(180deg, rgba(37,99,235,.95), rgba(37,99,235,.85));
+      border-color: rgba(37,99,235,.35);
+      color:#fff;
+    }
+    .okBtn{
+      background: linear-gradient(180deg, rgba(22,163,74,.92), rgba(22,163,74,.82));
+      border-color: rgba(22,163,74,.35);
+      color:#fff;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin: 14px 0 12px;
+    }
+    .tab{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.8);
+      color: var(--muted);
+      cursor:pointer;
+      font-weight:900;
+      position: relative;
+      z-index: 2;
+    }
+    .tab.active{
+      color:#0b1220;
+      border-color: rgba(37,99,235,.35);
+      background: rgba(37,99,235,.10);
+    }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    details.theory{
+      border:1px solid var(--stroke);
+      border-radius: 16px;
+      background: rgba(255,255,255,.85);
+      padding: 10px 12px;
+      box-shadow: 0 10px 22px rgba(15,23,42,.05);
+      margin-bottom: 12px;
+    }
+    details.theory > summary{
+      cursor:pointer;
+      font-weight: 900;
+      color: var(--text);
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    details.theory > summary::-webkit-details-marker{ display:none; }
+    .sumRight{
+      color: var(--muted);
+      font-weight: 800;
+      font-size:.92rem;
+      border:1px solid var(--stroke);
+      background:#fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+    .theoryBody{ margin-top: 10px; color: var(--muted); line-height: 1.5; font-size: .98rem; }
+    .theoryGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 8px;
+    }
+    @media (max-width: 700px){ .theoryGrid{ grid-template-columns: 1fr; } }
+    .theoryCard{
+      border:1px solid var(--stroke);
+      background: #fbfcff;
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .theoryCard b{ color: var(--text); }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top: 10px; }
+    label{ font-size:.92rem; color: var(--muted); }
+    input, select{
+      border:1px solid var(--stroke);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      outline:none;
+      width: 100%;
+      font-family: var(--mono);
+    }
+    input:focus, select:focus{
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .modeSel{ max-width: 360px; }
+    .modeSel.attention{
+      border-color: rgba(245,158,11,.55);
+      background: rgba(245,158,11,.08);
+      box-shadow: 0 0 0 4px rgba(245,158,11,.12);
+    }
+
+    .twoCol{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 640px){ .twoCol{ grid-template-columns: 1fr; } }
+
+    .qBox{
+      padding: 12px;
+      border-radius: 16px;
+      background: #fbfcff;
+      border: 1px solid var(--stroke);
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .qTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom: 6px;
+    }
+    .badge{
+      font-size:.82rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: #fff;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .mathLine{ font-size: 1.06rem; line-height: 1.45; }
+    .small{ font-size:.92rem; color: var(--muted); }
+    .feedback{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      background: #fff;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .feedback.good{ border-color: rgba(22,163,74,.30); background: rgba(22,163,74,.06); color:#0b2a15; }
+    .feedback.bad{ border-color: rgba(239,68,68,.30); background: rgba(239,68,68,.06); color:#3a0b0b; }
+
+    .hidden{ display:none; }
+    .mono{ font-family: var(--mono); }
+
+    .t3Grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 12px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .t3Grid{ grid-template-columns: 1fr; }
+    }
+
+    .kbdBox{
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.78);
+    }
+    .kbdHead{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom: 8px;
+    }
+    .kbdHead .hint{ font-size:.88rem; color: var(--muted); }
+    .kbdRow{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap:7px;
+    }
+    @media (max-width: 560px){
+      .kbdRow{ grid-template-columns: repeat(4, 1fr); }
+    }
+    .key{
+      padding: 7px 6px;
+      border-radius: 11px;
+      border:1px solid var(--stroke);
+      background: #fff;
+      box-shadow: 0 6px 14px rgba(15,23,42,.05);
+      font-family: var(--mono);
+      font-weight: 800;
+      font-size: .95rem;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation;
+      line-height: 1.05;
+    }
+    .key:active{ transform: scale(.98); }
+    .key.wide{ grid-column: span 3; font-family: var(--sans); font-size:.95rem; }
+    .key.accent{ border-color: rgba(37,99,235,.35); background: rgba(37,99,235,.06); }
+    .key.warn{ border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.08); }
+    .key.bad{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.06); }
+
+    .mantBox{
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 22px rgba(15,23,42,.06);
+      position: sticky;
+      top: 14px;
+    }
+    @media (max-width: 860px){
+      .mantBox{ position: static; }
+    }
+    .mantHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .mantHead b{ font-size: .98rem; }
+
+    .mantChoose{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin: 6px 0 10px;
+    }
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background:#fff;
+      font-weight: 900;
+      cursor:pointer;
+      box-shadow: 0 6px 14px rgba(15,23,42,.05);
+      user-select:none;
+    }
+    .chip.active{
+      border-color: rgba(37,99,235,.40);
+      background: rgba(37,99,235,.08);
+    }
+    .chipLabel{
+      color: var(--muted);
+      font-size: .92rem;
+      font-weight: 800;
+    }
+
+    .mantGrid2{
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap:8px;
+      align-items:end;
+    }
+    .mantOpMid{
+      width: 44px;
+      height: 44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: #fff;
+      font-weight: 1000;
+      font-family: var(--mono);
+      box-shadow: 0 6px 14px rgba(15,23,42,.05);
+      user-select:none;
+    }
+    .mantOpMid.active{
+      border-color: rgba(37,99,235,.40);
+      background: rgba(37,99,235,.08);
+    }
+
+    .mantResLine{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 8px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-family: var(--mono);
+      padding: 8px 10px;
+      border:1px solid var(--stroke);
+      border-radius: 999px;
+      background:#fff;
+      min-width: 90px;
+      text-align:center;
+      font-size: .95rem;
+      flex: 1 1 auto;
+    }
+    .miniBtn{
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: .92rem;
+      box-shadow: 0 6px 14px rgba(15,23,42,.05);
+    }
+
+    .footer{
+      margin-top: 14px;
+      color: #64748b;
+      font-size: .9rem;
+      text-align:center;
+    }
+
+    @media (max-width: 720px){
+      header{ flex-direction:column; align-items:stretch; }
+      .rightCol{ align-items:flex-start; min-width:auto; }
+      .stats{ justify-content:flex-start; }
+      .topBtns{ margin-top: 10px; justify-content:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1 id="hTitle">Notación científica · 2º ESO</h1>
+      <p class="subtitle" id="hSubtitle">3 pestañas: convertir, corregir y operar. (Acepta coma o punto.)</p>
+    </div>
+
+    <div class="rightCol">
+      <div class="stats" aria-label="Contador de progreso">
+        <span class="statPill statOk" id="statOkPill">✅ Aciertos: <b id="statOk">0</b></span>
+        <span class="statPill statBad" id="statBadPill">❌ Fallos: <b id="statBad">0</b></span>
+      </div>
+
+      <div class="topBtns">
+        <!-- selector idioma -->
+        <button class="chip active" id="langES" type="button">ES</button>
+        <button class="chip" id="langEN" type="button">EN</button>
+
+        <button class="primary" id="btnNew">🔄 Nuevo ejercicio</button>
+        <button id="btnReset">🧼 Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="t1" id="tabBtn1">1) Convertir</button>
+    <button class="tab" data-tab="t2" id="tabBtn2">2) Corregir</button>
+    <button class="tab" data-tab="t3" id="tabBtn3">3) Producto / Cociente</button>
+  </div>
+
+  <main class="card">
+
+    <!-- TEORÍA -->
+    <details class="theory" id="theoryBox">
+      <summary>
+        <span id="theorySummary">📚 Teoría básica de notación científica</span>
+        <span class="sumRight" id="theoryToggle">Abrir / Cerrar</span>
+      </summary>
+
+      <div class="theoryBody" id="theoryBody">
+        <div class="theoryGrid">
+
+          <div class="theoryCard">
+            <b id="th1Title">1) ¿Qué es?</b><br>
+            <span id="th1Text">Un número en notación científica se escribe como:</span>
+            <div style="margin-top:6px;">\(a\cdot 10^{n}\)</div>
+            <span id="th1Text2">donde \(n\) es un entero y la mantisa cumple \(1 \le |a| < 10\).</span>
+          </div>
+
+          <div class="theoryCard">
+            <b id="th2Title">2) Convertir</b><br>
+            <span id="th2Text">Mueve la coma hasta dejar una sola cifra distinta de cero a la izquierda.</span>
+            <div style="margin-top:6px;" id="th2Examples">
+              Ej.: \(4500 = 4{,}5\cdot 10^{3}\)<br>
+              Ej.: \(0{,}0032 = 3{,}2\cdot 10^{-3}\)
+            </div>
+          </div>
+
+          <div class="theoryCard">
+            <b id="th3Title">3) Producto y cociente</b><br>
+            <div style="margin-top:6px;" id="th3Text">
+              \((a\cdot10^{m})(b\cdot10^{n})=(ab)\cdot10^{m+n}\)<br>
+              \((a\cdot10^{m})\div(b\cdot10^{n})=(a/b)\cdot10^{m-n}\)
+            </div>
+          </div>
+
+          <div class="theoryCard">
+            <b id="th4Title">4) Normalizar</b><br>
+            <span id="th4Text">Si la mantisa no cumple \(1 \le |a| < 10\), ajusta:</span>
+            <div style="margin-top:6px;" id="th4Examples">
+              \(21\cdot10^{7}=2{,}1\cdot10^{8}\)<br>
+              \(0{,}42\cdot10^{5}=4{,}2\cdot10^{4}\)<br><br>
+              <b id="th4NegTitle">Con exponentes negativos:</b><br>
+              \(25\cdot10^{-4}=2{,}5\cdot10^{-3}\)<br>
+              \(0{,}36\cdot10^{-2}=3{,}6\cdot10^{-3}\)
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </details>
+
+    <!-- TAB 1 -->
+    <section id="t1" class="tabPanel">
+      <div class="qTitle">
+        <div>
+          <b id="t1Title">1) Convertir</b>
+          <div class="small" id="t1Small">Elige el tipo de ejercicio y responde.</div>
+        </div>
+        <span class="badge" id="t1Badge">Ejercicio</span>
+      </div>
+
+      <div class="row" style="margin-top:6px;">
+        <label for="t1Mode" style="min-width:220px;" id="t1TypeLabel">Tipo</label>
+        <select id="t1Mode" class="modeSel">
+          <option value="dec2sci" id="optDec2Sci">Decimal → Notación científica</option>
+          <option value="sci2dec" id="optSci2Dec">Notación científica → Decimal</option>
+        </select>
+      </div>
+
+      <div class="qBox">
+        <div class="mathLine" id="t1Question"></div>
+
+        <div class="row twoCol" style="margin-top:12px;">
+          <div>
+            <label for="t1Answer" id="t1AnsLabel">Tu respuesta</label>
+            <input id="t1Answer" placeholder="Ej.: 3,2*10^5  o  320000" />
+            <div class="small" style="margin-top:6px;" id="t1Formats">
+              Científica: <span class="mono">3,2*10^5</span> o <span class="mono">3.2e5</span>
+            </div>
+
+            <div class="kbdBox" data-kbd-for="t1Answer">
+              <div class="kbdHead">
+                <div><b id="kbdTitle1">Teclado</b></div>
+                <div class="hint" id="kbdHint1">Usa <span class="mono">*</span> y <span class="mono">^</span> (potencia)</div>
+              </div>
+              <div class="kbdRow">
+                <div class="key" data-k="7">7</div><div class="key" data-k="8">8</div><div class="key" data-k="9">9</div>
+                <div class="key accent" data-k="*">*</div><div class="key warn" data-k="^">^</div><div class="key" data-k=",">,</div>
+
+                <div class="key" data-k="4">4</div><div class="key" data-k="5">5</div><div class="key" data-k="6">6</div>
+                <div class="key" data-k="1">1</div><div class="key" data-k="2">2</div><div class="key" data-k="3">3</div>
+
+                <div class="key" data-k="0">0</div><div class="key" data-k="-">-</div><div class="key" data-k="+">+</div>
+                <div class="key wide bad" data-k="bksp" id="kbdBk1">⌫ Borrar</div>
+                <div class="key wide" data-k="clr" id="kbdClr1">Limpiar</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label>&nbsp;</label>
+            <button id="t1Check" class="okBtn" style="width:100%;">✅ <span id="btnCheck1">Comprobar</span></button>
+            <button id="t1Show" style="width:100%; margin-top:10px;">👁️ <span id="btnShow1">Mostrar solución</span></button>
+          </div>
+        </div>
+
+        <div id="t1Feedback" class="feedback">Pulsa “Nuevo ejercicio”, elige tipo y responde.</div>
+      </div>
+    </section>
+
+    <!-- TAB 2 -->
+    <section id="t2" class="tabPanel hidden">
+      <div class="qTitle">
+        <div>
+          <b id="t2Title">2) Corregir</b>
+          <div class="small" id="t2Small">Corrige un número que está “casi” en notación científica (exponentes + y −).</div>
+        </div>
+        <span class="badge" id="t2Badge">Ejercicio</span>
+      </div>
+
+      <div class="qBox">
+        <div class="mathLine" id="t2Question"></div>
+
+        <div class="row twoCol" style="margin-top:12px;">
+          <div>
+            <label for="t2Answer" id="t2AnsLabel">Tu corrección (en notación científica)</label>
+            <input id="t2Answer" placeholder="Ej.: 2,32*10^5" />
+            <div class="small" style="margin-top:6px;" id="t2Remember">Recuerda: \(1 \le |a| < 10\)</div>
+
+            <div class="kbdBox" data-kbd-for="t2Answer">
+              <div class="kbdHead">
+                <div><b id="kbdTitle2">Teclado</b></div>
+                <div class="hint" id="kbdHint2">Usa <span class="mono">*</span> y <span class="mono">^</span> (potencia)</div>
+              </div>
+              <div class="kbdRow">
+                <div class="key" data-k="7">7</div><div class="key" data-k="8">8</div><div class="key" data-k="9">9</div>
+                <div class="key accent" data-k="*">*</div><div class="key warn" data-k="^">^</div><div class="key" data-k=",">,</div>
+
+                <div class="key" data-k="4">4</div><div class="key" data-k="5">5</div><div class="key" data-k="6">6</div>
+                <div class="key" data-k="1">1</div><div class="key" data-k="2">2</div><div class="key" data-k="3">3</div>
+
+                <div class="key" data-k="0">0</div><div class="key" data-k="-">-</div><div class="key" data-k="+">+</div>
+                <div class="key wide bad" data-k="bksp" id="kbdBk2">⌫ Borrar</div>
+                <div class="key wide" data-k="clr" id="kbdClr2">Limpiar</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label>&nbsp;</label>
+            <button id="t2Check" class="okBtn" style="width:100%;">✅ <span id="btnCheck2">Comprobar</span></button>
+            <button id="t2Show" style="width:100%; margin-top:10px;">👁️ <span id="btnShow2">Mostrar solución</span></button>
+          </div>
+        </div>
+
+        <div id="t2Feedback" class="feedback">Escribe la corrección y pulsa “Comprobar”.</div>
+      </div>
+    </section>
+
+    <!-- TAB 3 -->
+    <section id="t3" class="tabPanel hidden">
+      <div class="qTitle">
+        <div>
+          <b id="t3Title">3) Producto y cociente</b>
+          <div class="small" id="t3Small">Calcula y deja el resultado final en notación científica.</div>
+        </div>
+        <span class="badge" id="t3Badge">Ejercicio</span>
+      </div>
+
+      <div class="qBox">
+        <div class="t3Grid">
+          <div>
+            <div class="mathLine" id="t3Question"></div>
+
+            <div class="row twoCol" style="margin-top:12px;">
+              <div>
+                <label for="t3Answer" id="t3AnsLabel">Tu respuesta (en notación científica)</label>
+                <input id="t3Answer" placeholder="Ej.: 2,1*10^8" />
+
+                <div class="kbdBox" data-kbd-for="t3Answer">
+                  <div class="kbdHead">
+                    <div><b id="kbdTitle3">Teclado</b></div>
+                    <div class="hint" id="kbdHint3">Usa <span class="mono">*</span> y <span class="mono">^</span> (potencia)</div>
+                  </div>
+                  <div class="kbdRow">
+                    <div class="key" data-k="7">7</div><div class="key" data-k="8">8</div><div class="key" data-k="9">9</div>
+                    <div class="key accent" data-k="*">*</div><div class="key warn" data-k="^">^</div><div class="key" data-k=",">,</div>
+
+                    <div class="key" data-k="4">4</div><div class="key" data-k="5">5</div><div class="key" data-k="6">6</div>
+                    <div class="key" data-k="1">1</div><div class="key" data-k="2">2</div><div class="key" data-k="3">3</div>
+
+                    <div class="key" data-k="0">0</div><div class="key" data-k="-">-</div><div class="key" data-k="+">+</div>
+                    <div class="key wide bad" data-k="bksp" id="kbdBk3">⌫ Borrar</div>
+                    <div class="key wide" data-k="clr" id="kbdClr3">Limpiar</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label>&nbsp;</label>
+                <button id="t3Check" class="okBtn" style="width:100%;">✅ <span id="btnCheck3">Comprobar</span></button>
+                <button id="t3Show" style="width:100%; margin-top:10px;">👁️ <span id="btnShow3">Mostrar pasos</span></button>
+              </div>
+            </div>
+
+            <div id="t3Feedback" class="feedback">Pulsa “Mostrar pasos” para ver el desarrollo completo.</div>
+          </div>
+
+          <!-- Mantisas -->
+          <aside class="mantBox">
+            <div class="mantHead">
+              <div><b id="mantTitle">Mantisas</b> <span class="small" id="mantSmall">(elige operación)</span></div>
+              <span class="badge" id="mantBadge">Rápido</span>
+            </div>
+
+            <div class="mantChoose">
+              <span class="chipLabel" id="mantChooseLabel">Elige:</span>
+              <button class="chip" id="mantPickMul" type="button">×</button>
+              <button class="chip" id="mantPickDiv" type="button">÷</button>
+            </div>
+
+            <div class="mantGrid2">
+              <div>
+                <label for="mantA">A</label>
+                <input id="mantA" placeholder="3,2" />
+              </div>
+
+              <div class="mantOpMid" id="mantMidOp" title="Operación elegida">?</div>
+
+              <div>
+                <label for="mantB">B</label>
+                <input id="mantB" placeholder="7" />
+              </div>
+            </div>
+
+            <div class="mantResLine">
+              <span id="mantRes" class="pill">—</span>
+              <button id="mantDo" class="primary miniBtn"><span id="mantCalcBtn">Calcular</span></button>
+              <button id="mantCopy" class="miniBtn"><span id="mantCopyBtn">Copiar</span></button>
+              <button id="mantClear" class="miniBtn"><span id="mantClearBtn">Limpiar</span></button>
+            </div>
+
+            <div class="small" style="margin-top:8px;" id="mantNote">
+              El símbolo <span class="mono">^</span> indica potencia (ej.: <span class="mono">10^5</span>).
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer" id="footerTxt">Creado por Sergio Jodral, Profesor de Matemáticas.</div>
+  </main>
+</div>
+
+<script>
+/* =========================
+   i18n (ES / EN) - mismo recurso, solo cambia el texto
+========================= */
+let currentLang = "ES";
+
+const i18n = {
+  ES: {
+    title: "Notación científica · 2º ESO",
+    subtitle: "3 pestañas: convertir, corregir y operar. (Acepta coma o punto.)",
+    statOk: "✅ Aciertos:",
+    statBad: "❌ Fallos:",
+    new: "🔄 Nuevo ejercicio",
+    reset: "🧼 Reset",
+
+    tab1: "1) Convertir",
+    tab2: "2) Corregir",
+    tab3: "3) Producto / Cociente",
+
+    theorySummary: "📚 Teoría básica de notación científica",
+    theoryToggle: "Abrir / Cerrar",
+
+    th1Title: "1) ¿Qué es?",
+    th1Text: "Un número en notación científica se escribe como:",
+    th1Text2: "donde n es un entero y la mantisa cumple 1 ≤ |a| < 10.",
+
+    th2Title: "2) Convertir",
+    th2Text: "Mueve la coma hasta dejar una sola cifra distinta de cero a la izquierda.",
+    th2Examples: "Ej.: \\(4500 = 4{,}5\\cdot 10^{3}\\)<br>Ej.: \\(0{,}0032 = 3{,}2\\cdot 10^{-3}\\)",
+
+    th3Title: "3) Producto y cociente",
+
+    th4Title: "4) Normalizar",
+    th4Text: "Si la mantisa no cumple 1 ≤ |a| < 10, ajusta:",
+    th4NegTitle: "Con exponentes negativos:",
+
+    t1Title: "1) Convertir",
+    t1Small: "Elige el tipo de ejercicio y responde.",
+    t1TypeLabel: "Tipo",
+    optDec2Sci: "Decimal → Notación científica",
+    optSci2Dec: "Notación científica → Decimal",
+    t1Formats: "Científica: 3,2*10^5 o 3.2e5",
+    btnCheck: "Comprobar",
+    btnShowSol: "Mostrar solución",
+
+    t2Title: "2) Corregir",
+    t2Small: "Corrige un número que está “casi” en notación científica (exponentes + y −).",
+    t2Remember: "Recuerda: \\(1 \\le |a| < 10\\)",
+    btnShowSol2: "Mostrar solución",
+
+    t3Title: "3) Producto y cociente",
+    t3Small: "Calcula y deja el resultado final en notación científica.",
+    btnShowSteps: "Mostrar pasos",
+
+    ans: "Tu respuesta",
+    ansSci: "Tu respuesta (en notación científica)",
+    correction: "Tu corrección (en notación científica)",
+
+    kbdTitle: "Teclado",
+    kbdHint: "Usa * y ^ (potencia)",
+    kbdBk: "⌫ Borrar",
+    kbdClr: "Limpiar",
+
+    mantTitle: "Mantisas",
+    mantSmall: "(elige operación)",
+    mantBadge: "Rápido",
+    mantChoose: "Elige:",
+    mantCalc: "Calcular",
+    mantCopy: "Copiar",
+    mantClear: "Limpiar",
+    mantNote: "El símbolo ^ indica potencia (ej.: 10^5).",
+    mantPickMsg: "Elige × o ÷",
+    mantErr: "Error",
+
+    fbStart1: "Pulsa “Nuevo ejercicio”, elige tipo y responde.",
+    fbStart2: "Escribe la corrección y pulsa “Comprobar”.",
+    fbStart3: "Pulsa “Mostrar pasos” para ver el desarrollo completo.",
+    checking: "Comprobando...",
+
+    invalid: "Respuesta no válida.",
+    incorrect: "Incorrecto.",
+    correct: "¡Correcto!",
+    tryAgain: "Intenta de nuevo. Te queda 1 intento.",
+    solution: "Solución:",
+    fullSteps: "Pasos completos:",
+    correctButNotSci: "La operación es correcta, pero no está expresada en notación científica.",
+    resetDone: "Reset hecho. Pulsa “Nuevo ejercicio”.",
+
+    qDec2Sci: "Convierte a notación científica:",
+    qSci2Dec: "Pasa a número decimal:",
+    qCorrect: "Corrige (NO está bien en notación científica):",
+    qOperate: "Calcula y deja el resultado en notación científica:",
+
+    badgeDec2Sci: "Decimal → Científica",
+    badgeSci2Dec: "Científica → Decimal",
+    badgeFix: "Corrige",
+    badgeProd: "Producto",
+    badgeQuot: "Cociente",
+
+    labelReal1: "distancia aproximada (m)",
+    labelReal2: "población aproximada (personas)",
+    labelReal3: "tamaño microscópico (m)",
+    labelReal4: "masa aproximada (kg)",
+    labelReal5: "tiempo (s)",
+    labelReal6: "capacidad (bytes)",
+
+    footer: "Creado por Sergio Jodral, Profesor de Matemáticas."
+  },
+
+  EN: {
+    title: "Scientific notation · Year 8",
+    subtitle: "3 tabs: convert, correct and operate. (Comma or dot accepted.)",
+    statOk: "✅ Correct:",
+    statBad: "❌ Wrong:",
+    new: "🔄 New exercise",
+    reset: "🧼 Reset",
+
+    tab1: "1) Convert",
+    tab2: "2) Correct",
+    tab3: "3) Product / Quotient",
+
+    theorySummary: "📚 Basic theory of scientific notation",
+    theoryToggle: "Open / Close",
+
+    th1Title: "1) What is it?",
+    th1Text: "A number in scientific notation is written as:",
+    th1Text2: "where n is an integer and the mantissa satisfies 1 ≤ |a| < 10.",
+
+    th2Title: "2) Convert",
+    th2Text: "Move the decimal point until there is one non-zero digit on the left.",
+    th2Examples: "Ex.: \\(4500 = 4{,}5\\cdot 10^{3}\\)<br>Ex.: \\(0{,}0032 = 3{,}2\\cdot 10^{-3}\\)",
+
+    th3Title: "3) Product and quotient",
+
+    th4Title: "4) Normalize",
+    th4Text: "If the mantissa does not satisfy 1 ≤ |a| < 10, adjust:",
+    th4NegTitle: "With negative exponents:",
+
+    t1Title: "1) Convert",
+    t1Small: "Choose the exercise type and answer.",
+    t1TypeLabel: "Type",
+    optDec2Sci: "Decimal → Scientific notation",
+    optSci2Dec: "Scientific notation → Decimal",
+    t1Formats: "Scientific: 3,2*10^5 or 3.2e5",
+    btnCheck: "Check",
+    btnShowSol: "Show solution",
+
+    t2Title: "2) Correct",
+    t2Small: "Correct a number that is “almost” in scientific notation (positive and negative exponents).",
+    t2Remember: "Remember: \\(1 \\le |a| < 10\\)",
+    btnShowSol2: "Show solution",
+
+    t3Title: "3) Product and quotient",
+    t3Small: "Calculate and write the final result in scientific notation.",
+    btnShowSteps: "Show steps",
+
+    ans: "Your answer",
+    ansSci: "Your answer (scientific notation)",
+    correction: "Your correction (scientific notation)",
+
+    kbdTitle: "Keyboard",
+    kbdHint: "Use * and ^ (power)",
+    kbdBk: "⌫ Backspace",
+    kbdClr: "Clear",
+
+    mantTitle: "Mantissas",
+    mantSmall: "(choose the operation)",
+    mantBadge: "Quick",
+    mantChoose: "Choose:",
+    mantCalc: "Calculate",
+    mantCopy: "Copy",
+    mantClear: "Clear",
+    mantNote: "The symbol ^ means power (e.g., 10^5).",
+    mantPickMsg: "Choose × or ÷",
+    mantErr: "Error",
+
+    fbStart1: "Click “New exercise”, choose the type and answer.",
+    fbStart2: "Write the correction and click “Check”.",
+    fbStart3: "Click “Show steps” to see the full solution.",
+    checking: "Checking...",
+
+    invalid: "Invalid answer.",
+    incorrect: "Incorrect.",
+    correct: "Correct!",
+    tryAgain: "Try again. You have 1 attempt left.",
+    solution: "Solution:",
+    fullSteps: "Full steps:",
+    correctButNotSci: "The operation is correct, but it is not written in scientific notation.",
+    resetDone: "Reset done. Click “New exercise”.",
+
+    qDec2Sci: "Convert to scientific notation:",
+    qSci2Dec: "Convert to decimal:",
+    qCorrect: "Correct it (NOT properly written in scientific notation):",
+    qOperate: "Calculate and write the result in scientific notation:",
+
+    badgeDec2Sci: "Decimal → Scientific",
+    badgeSci2Dec: "Scientific → Decimal",
+    badgeFix: "Correct",
+    badgeProd: "Product",
+    badgeQuot: "Quotient",
+
+    labelReal1: "approx. distance (m)",
+    labelReal2: "approx. population (people)",
+    labelReal3: "microscopic size (m)",
+    labelReal4: "approx. mass (kg)",
+    labelReal5: "time (s)",
+    labelReal6: "capacity (bytes)",
+
+    footer: "Created by Sergio Jodral, Mathematics teacher."
+  }
+};
+
+function t(key){ return i18n[currentLang][key] ?? key; }
+
+function applyLanguage(){
+  document.documentElement.lang = (currentLang === "EN") ? "en" : "es";
+  document.getElementById("hTitle").textContent = t("title");
+  document.getElementById("hSubtitle").textContent = t("subtitle");
+
+  document.getElementById("statOkPill").innerHTML = `${t("statOk")} <b id="statOk">${stats.ok}</b>`;
+  document.getElementById("statBadPill").innerHTML = `${t("statBad")} <b id="statBad">${stats.bad}</b>`;
+
+  document.getElementById("btnNew").textContent = t("new");
+  document.getElementById("btnReset").textContent = t("reset");
+
+  document.getElementById("tabBtn1").textContent = t("tab1");
+  document.getElementById("tabBtn2").textContent = t("tab2");
+  document.getElementById("tabBtn3").textContent = t("tab3");
+
+  document.getElementById("theorySummary").textContent = t("theorySummary");
+  document.getElementById("theoryToggle").textContent = t("theoryToggle");
+
+  document.getElementById("th1Title").textContent = t("th1Title");
+  document.getElementById("th1Text").textContent = t("th1Text");
+  document.getElementById("th1Text2").textContent = t("th1Text2");
+
+  document.getElementById("th2Title").textContent = t("th2Title");
+  document.getElementById("th2Text").textContent = t("th2Text");
+  document.getElementById("th2Examples").innerHTML = t("th2Examples");
+
+  document.getElementById("th3Title").textContent = t("th3Title");
+
+  document.getElementById("th4Title").textContent = t("th4Title");
+  document.getElementById("th4Text").textContent = t("th4Text");
+  document.getElementById("th4NegTitle").textContent = t("th4NegTitle");
+
+  document.getElementById("t1Title").textContent = t("t1Title");
+  document.getElementById("t1Small").textContent = t("t1Small");
+  document.getElementById("t1TypeLabel").textContent = t("t1TypeLabel");
+  document.getElementById("optDec2Sci").textContent = t("optDec2Sci");
+  document.getElementById("optSci2Dec").textContent = t("optSci2Dec");
+  document.getElementById("t1AnsLabel").textContent = t("ans");
+  document.getElementById("t1Formats").textContent = t("t1Formats");
+  document.getElementById("btnCheck1").textContent = t("btnCheck");
+  document.getElementById("btnShow1").textContent = t("btnShowSol");
+
+  document.getElementById("t2Title").textContent = t("t2Title");
+  document.getElementById("t2Small").textContent = t("t2Small");
+  document.getElementById("t2AnsLabel").textContent = t("correction");
+  document.getElementById("t2Remember").innerHTML = t("t2Remember");
+  document.getElementById("btnCheck2").textContent = t("btnCheck");
+  document.getElementById("btnShow2").textContent = t("btnShowSol2");
+
+  document.getElementById("t3Title").textContent = t("t3Title");
+  document.getElementById("t3Small").textContent = t("t3Small");
+  document.getElementById("t3AnsLabel").textContent = t("ansSci");
+  document.getElementById("btnCheck3").textContent = t("btnCheck");
+  document.getElementById("btnShow3").textContent = t("btnShowSteps");
+
+  document.getElementById("kbdTitle1").textContent = t("kbdTitle");
+  document.getElementById("kbdTitle2").textContent = t("kbdTitle");
+  document.getElementById("kbdTitle3").textContent = t("kbdTitle");
+  document.getElementById("kbdHint1").innerHTML = t("kbdHint");
+  document.getElementById("kbdHint2").innerHTML = t("kbdHint");
+  document.getElementById("kbdHint3").innerHTML = t("kbdHint");
+  document.getElementById("kbdBk1").textContent = t("kbdBk");
+  document.getElementById("kbdBk2").textContent = t("kbdBk");
+  document.getElementById("kbdBk3").textContent = t("kbdBk");
+  document.getElementById("kbdClr1").textContent = t("kbdClr");
+  document.getElementById("kbdClr2").textContent = t("kbdClr");
+  document.getElementById("kbdClr3").textContent = t("kbdClr");
+
+  document.getElementById("mantTitle").textContent = t("mantTitle");
+  document.getElementById("mantSmall").textContent = t("mantSmall");
+  document.getElementById("mantBadge").textContent = t("mantBadge");
+  document.getElementById("mantChooseLabel").textContent = t("mantChoose");
+  document.getElementById("mantCalcBtn").textContent = t("mantCalc");
+  document.getElementById("mantCopyBtn").textContent = t("mantCopy");
+  document.getElementById("mantClearBtn").textContent = t("mantClear");
+  document.getElementById("mantNote").innerHTML = t("mantNote").replace("^", "<span class='mono'>^</span>");
+
+  document.getElementById("footerTxt").textContent = t("footer");
+
+  // refresca textos de feedback “neutros” si aún están en el estado inicial típico
+  const f1 = document.getElementById("t1Feedback");
+  const f2 = document.getElementById("t2Feedback");
+  const f3 = document.getElementById("t3Feedback");
+  if(f1.dataset.state === "start"){ f1.textContent = t("fbStart1"); }
+  if(f2.dataset.state === "start"){ f2.textContent = t("fbStart2"); }
+  if(f3.dataset.state === "start"){ f3.textContent = t("fbStart3"); }
+
+  // re-typeset por si cambió HTML con LaTeX
+  typesetSafe(document.getElementById("theoryBody"));
+  typesetSafe();
+}
+
+/* =========================
+   MathJax: typeset seguro
+========================= */
+function typesetSafe(targetEl){
+  const mj = window.MathJax;
+  if(!mj || !mj.typesetPromise){
+    setTimeout(()=>typesetSafe(targetEl), 60);
+    return;
+  }
+  try{
+    if(targetEl){
+      mj.typesetClear?.([targetEl]);
+      mj.typesetPromise([targetEl]);
+    }else{
+      mj.typesetClear?.();
+      mj.typesetPromise();
+    }
+  }catch(e){}
+}
+
+/* =========================
+   CONTADOR ACIERTOS / FALLOS
+========================= */
+const stats = { ok: 0, bad: 0 };
+function renderStats(){
+  // OJO: stat pills se actualizan por applyLanguage (para idioma)
+  applyLanguage();
+}
+function addOk(){ stats.ok++; renderStats(); }
+function addBad(){ stats.bad++; renderStats(); }
+
+/* =========================
+   UTILIDADES
+========================= */
+function normText(s){
+  return (s ?? "")
+    .trim()
+    .replace(/\s+/g, "")
+    .replace(/,/g, ".")
+    .replace(/×/g, "*")
+    .replace(/·/g, "*");
+}
+function approxEqual(x, y, rel=1e-8, abs=1e-10){
+  const diff = Math.abs(x-y);
+  if(diff <= abs) return true;
+  return diff <= rel * Math.max(1, Math.abs(x), Math.abs(y));
+}
+function roundTo(a, digits){
+  const p = Math.pow(10, digits);
+  return Math.round(a*p)/p;
+}
+function parseToNumber(input){
+  const raw = normText(input);
+  if(!raw) return { ok:false };
+
+  const eMatch = raw.match(/^([+-]?\d+(\.\d+)?)(e)([+-]?\d+)$/i);
+  if(eMatch){
+    const a = Number(eMatch[1]);
+    const n = Number(eMatch[4]);
+    if(!isFinite(a) || !isFinite(n)) return { ok:false };
+    return { ok:true, value: a * Math.pow(10, n), mantissa:a, exp:n, form:"e" };
+  }
+
+  const sciMatch = raw.match(/^([+-]?\d+(\.\d+)?)(\*)10(\^|\*\*)(\(?[+-]?\d+\)?)$/);
+  if(sciMatch){
+    const a = Number(sciMatch[1]);
+    let nStr = String(sciMatch[5]).replace(/[()]/g,"");
+    const n = Number(nStr);
+    if(!isFinite(a) || !isFinite(n)) return { ok:false };
+    return { ok:true, value: a * Math.pow(10, n), mantissa:a, exp:n, form:"sci" };
+  }
+
+  const num = Number(raw);
+  if(isFinite(num)) return { ok:true, value:num, form:"dec" };
+  return { ok:false };
+}
+
+function isScientificMantissa(a){
+  const abs = Math.abs(a);
+  return abs >= 1 && abs < 10;
+}
+function toScientificParts(x){
+  if(x === 0) return { a:0, n:0 };
+  const sign = x < 0 ? -1 : 1;
+  const abs = Math.abs(x);
+  let n = Math.floor(Math.log10(abs));
+  let a = abs / Math.pow(10, n);
+  if(a >= 10){ a /= 10; n += 1; }
+  if(a < 1){ a *= 10; n -= 1; }
+  return { a: sign*a, n };
+}
+function fmtSci(a, n, digits=3){
+  const ra = roundTo(a, digits);
+  let aStr = String(ra).replace(".", ",");
+  return `${aStr}\\cdot 10^{${n}}`;
+}
+function setFeedback(el, kind, html, state=null){
+  el.className = "feedback" + (kind ? (" " + kind) : "");
+  el.innerHTML = html;
+  if(state) el.dataset.state = state;
+  typesetSafe(el);
+}
+
+/* =========================
+   GENERACIÓN
+========================= */
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function makeMantissaSig(){
+  const sig = pick([3,4]);
+  const first = randInt(1,9);
+  let rest = "";
+  for(let i=1;i<sig;i++) rest += String(randInt(0,9));
+  const denom = Math.pow(10, sig-1);
+  return roundTo(first + Number(rest)/denom, sig-1);
+}
+function sciToDecimalString(a, n){
+  let sp = String(a);
+  let sign = "";
+  if(sp.startsWith("-")){ sign="-"; sp = sp.slice(1); }
+  let [intPart, decPart=""] = sp.split(".");
+  let digits = intPart + decPart;
+  let decPos = intPart.length;
+  let newPos = decPos + n;
+
+  if(newPos <= 0){
+    digits = "0".repeat(-newPos) + digits;
+    newPos = 0;
+  } else if(newPos >= digits.length){
+    digits = digits + "0".repeat(newPos - digits.length);
+  }
+
+  let left = digits.slice(0, newPos) || "0";
+  let right = digits.slice(newPos).replace(/0+$/,"");
+  const out = right ? `${left},${right}` : `${left}`;
+  return sign + out.replace(/^0+(?=\d)/, "0");
+}
+
+function getRealLabels(){
+  return [
+    t("labelReal1"),
+    t("labelReal2"),
+    t("labelReal3"),
+    t("labelReal4"),
+    t("labelReal5"),
+    t("labelReal6")
+  ];
+}
+
+/* =========================
+   ESTADO + INTENTOS
+========================= */
+let currentTab = "t1";
+let ex1=null, ex2=null, ex3=null;
+let tries1=0, tries2=0, tries3=0;
+
+/* Mantisas: elección del alumno */
+let mantUserOp = null; // "mul" | "div" | null
+function setMantUserOp(op){
+  mantUserOp = op;
+
+  document.getElementById("mantPickMul").classList.toggle("active", op==="mul");
+  document.getElementById("mantPickDiv").classList.toggle("active", op==="div");
+
+  const mid = document.getElementById("mantMidOp");
+  if(!mid) return;
+
+  if(op==="mul"){
+    mid.textContent = "×";
+    mid.classList.add("active");
+  }else if(op==="div"){
+    mid.textContent = "÷";
+    mid.classList.add("active");
+  }else{
+    mid.textContent = "?";
+    mid.classList.remove("active");
+  }
+}
+
+/* des/activar comprobar */
+function setCheckEnabled(tabId, enabled){
+  const map = { t1: "t1Check", t2: "t2Check", t3: "t3Check" };
+  const btn = document.getElementById(map[tabId]);
+  if(btn) btn.disabled = !enabled;
+}
+
+/* =========================
+   TABS
+========================= */
+const tabButtons = document.querySelectorAll(".tab");
+const panels = document.querySelectorAll(".tabPanel");
+tabButtons.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const id = btn.dataset.tab;
+    currentTab = id;
+    tabButtons.forEach(b=>b.classList.toggle("active", b===btn));
+    panels.forEach(p=>p.classList.toggle("hidden", p.id !== id));
+    typesetSafe();
+  });
+});
+
+/* =========================
+   TAB 1
+========================= */
+function updateT1ModeHighlight(){
+  const sel = document.getElementById("t1Mode");
+  sel.classList.toggle("attention", sel.value === "sci2dec");
+}
+function genTab1(){
+  tries1 = 0;
+  setCheckEnabled("t1", true);
+
+  updateT1ModeHighlight();
+
+  const mode = document.getElementById("t1Mode").value;
+  const label = pick(getRealLabels());
+  const n = randInt(-8, 8);
+  const a = makeMantissaSig();
+  const value = a * Math.pow(10, n);
+  ex1 = { mode, a, n, value, label };
+
+  document.getElementById("t1Answer").value = "";
+  document.getElementById("t1Badge").textContent =
+    (mode==="dec2sci") ? t("badgeDec2Sci") : t("badgeSci2Dec");
+
+  const qEl = document.getElementById("t1Question");
+  if(mode==="dec2sci"){
+    qEl.innerHTML = `${t("qDec2Sci")} \\( ${sciToDecimalString(a,n)} \\) <span class="small">(${label})</span>`;
+  }else{
+    qEl.innerHTML = `${t("qSci2Dec")} \\( ${fmtSci(a,n,4)} \\) <span class="small">(${label})</span>`;
+  }
+
+  const fb = document.getElementById("t1Feedback");
+  fb.className="feedback";
+  fb.textContent = t("fbStart1");
+  fb.dataset.state = "start";
+  typesetSafe(qEl);
+}
+function checkTab1(){
+  if(document.getElementById("t1Check").disabled) return;
+
+  const fb = document.getElementById("t1Feedback");
+  fb.className = "feedback";
+  fb.textContent = t("checking");
+  fb.dataset.state = "work";
+
+  const parsed = parseToNumber(document.getElementById("t1Answer").value);
+  if(!parsed.ok){
+    tries1++;
+    if(tries1===1){
+      setFeedback(fb,"bad",`<b>${t("invalid")}</b> ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t1", false);
+      showTab1();
+    }
+    return;
+  }
+
+  const sameValue = approxEqual(parsed.value, ex1.value, 1e-8, 1e-10);
+
+  if(ex1.mode === "dec2sci"){
+    if(!sameValue || parsed.form==="dec" || !isScientificMantissa(parsed.mantissa)){
+      tries1++;
+      if(tries1===1){
+        setFeedback(fb,"bad",`<b>${t("incorrect")}</b> ${t("tryAgain")}`);
+      }else{
+        addBad();
+        setCheckEnabled("t1", false);
+        showTab1();
+      }
+      return;
+    }
+    addOk();
+    setCheckEnabled("t1", false);
+    setFeedback(fb,"good",`<b>${t("correct")}</b> \\(${fmtSci(ex1.a, ex1.n, 4)}\\)`);
+    tries1 = 0;
+  } else {
+    if(!sameValue || parsed.form==="sci" || parsed.form==="e"){
+      tries1++;
+      if(tries1===1){
+        setFeedback(fb,"bad",`<b>${t("incorrect")}</b> ${t("tryAgain")}`);
+      }else{
+        addBad();
+        setCheckEnabled("t1", false);
+        showTab1();
+      }
+      return;
+    }
+    addOk();
+    setCheckEnabled("t1", false);
+    setFeedback(fb,"good",`<b>${t("correct")}</b> <span class="mono">${sciToDecimalString(ex1.a, ex1.n)}</span>`);
+    tries1 = 0;
+  }
+}
+function showTab1(){
+  const fb = document.getElementById("t1Feedback");
+  if(ex1.mode==="dec2sci") setFeedback(fb,"good",`<b>${t("solution")}</b> \\(${fmtSci(ex1.a, ex1.n, 4)}\\)`);
+  else setFeedback(fb,"good",`<b>${t("solution")}</b> <span class="mono">${sciToDecimalString(ex1.a, ex1.n)}</span>`);
+}
+
+/* =========================
+   TAB 2
+========================= */
+function genTab2(){
+  tries2 = 0;
+  setCheckEnabled("t2", true);
+
+  const goodN = randInt(-8, 8);
+  const goodA = makeMantissaSig();
+  const value = goodA * Math.pow(10, goodN);
+
+  const kind = pick(["mantissaBig","mantissaSmall","notNormalizedSameValue"]);
+  let wrongA = goodA, wrongN = goodN;
+
+  if(kind==="mantissaBig"){
+    const shift = pick([1,2]);
+    wrongA = goodA * Math.pow(10, shift);
+    wrongN = goodN - shift;
+  }else if(kind==="mantissaSmall"){
+    wrongA = goodA / 10;
+    wrongN = goodN + 1;
+  }else{
+    const shift = pick([2,3]);
+    wrongA = goodA * Math.pow(10, shift);
+    wrongN = goodN - shift;
+  }
+
+  ex2 = { goodA, goodN, value, wrongA, wrongN };
+
+  document.getElementById("t2Answer").value = "";
+  document.getElementById("t2Badge").textContent = t("badgeFix");
+
+  const q = document.getElementById("t2Question");
+  q.innerHTML = `${t("qCorrect")}<br/>\\( ${fmtSci(wrongA, wrongN, 4)} \\)`;
+
+  const fb = document.getElementById("t2Feedback");
+  fb.className="feedback";
+  fb.textContent = t("fbStart2");
+  fb.dataset.state = "start";
+  typesetSafe(q);
+}
+function checkTab2(){
+  if(document.getElementById("t2Check").disabled) return;
+
+  const fb = document.getElementById("t2Feedback");
+  fb.className = "feedback";
+  fb.textContent = t("checking");
+  fb.dataset.state = "work";
+
+  const parsed = parseToNumber(document.getElementById("t2Answer").value);
+  if(!parsed.ok){
+    tries2++;
+    if(tries2===1){
+      setFeedback(fb,"bad",`<b>${t("invalid")}</b> ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t2", false);
+      showTab2();
+    }
+    return;
+  }
+
+  const sameValue = approxEqual(parsed.value, ex2.value, 1e-8, 1e-10);
+  const sciFormOk = (parsed.form !== "dec") && isScientificMantissa(parsed.mantissa);
+
+  if(!(sameValue && sciFormOk)){
+    tries2++;
+    if(tries2===1){
+      setFeedback(fb,"bad",`<b>${t("incorrect")}</b> ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t2", false);
+      showTab2();
+    }
+    return;
+  }
+
+  addOk();
+  setCheckEnabled("t2", false);
+  setFeedback(fb,"good",`<b>${t("correct")}</b> \\(${fmtSci(ex2.goodA, ex2.goodN, 4)}\\)`);
+  tries2 = 0;
+}
+function showTab2(){
+  const fb = document.getElementById("t2Feedback");
+  setFeedback(fb,"good",`<b>${t("solution")}</b> \\(${fmtSci(ex2.goodA, ex2.goodN, 4)}\\)`);
+}
+
+/* =========================
+   TAB 3
+========================= */
+function genTab3(){
+  tries3 = 0;
+  setCheckEnabled("t3", true);
+
+  function niceMantissa(){
+    if(Math.random()<0.55) return randInt(2,9);
+    return roundTo(randInt(11, 99)/10, 1);
+  }
+  function makeSciNice(){
+    const a = niceMantissa();
+    const n = randInt(-6, 6);
+    return { a, n, value: a*Math.pow(10,n) };
+  }
+
+  const A = makeSciNice();
+  const B = makeSciNice();
+  const op = Math.random() < 0.55 ? "mul" : "div";
+  const value = (op==="mul") ? (A.value*B.value) : (A.value/B.value);
+  const good = toScientificParts(value);
+
+  ex3 = { A, B, op, value, goodA: good.a, goodN: good.n };
+
+  document.getElementById("t3Answer").value = "";
+  document.getElementById("t3Badge").textContent = op==="mul" ? t("badgeProd") : t("badgeQuot");
+
+  const symbol = op==="mul" ? "\\times" : "\\div";
+  const q = document.getElementById("t3Question");
+  q.innerHTML =
+    `${t("qOperate")}<br/>
+     \\( (${fmtSci(A.a, A.n, 3)}) ${symbol} (${fmtSci(B.a, B.n, 3)}) \\)`;
+
+  document.getElementById("mantA").value = String(A.a).replace(".", ",");
+  document.getElementById("mantB").value = String(B.a).replace(".", ",");
+
+  setMantUserOp(null);
+  updateMantRes("—");
+
+  const fb = document.getElementById("t3Feedback");
+  fb.className="feedback";
+  fb.textContent = t("fbStart3");
+  fb.dataset.state = "start";
+  typesetSafe(q);
+}
+
+function checkTab3(){
+  if(document.getElementById("t3Check").disabled) return;
+
+  const fb = document.getElementById("t3Feedback");
+  fb.className = "feedback";
+  fb.textContent = t("checking");
+  fb.dataset.state = "work";
+
+  const parsed = parseToNumber(document.getElementById("t3Answer").value);
+  if(!parsed.ok){
+    tries3++;
+    if(tries3===1){
+      setFeedback(fb,"bad",`<b>${t("invalid")}</b> ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t3", false);
+      showTab3Steps();
+    }
+    return;
+  }
+
+  const sameValue = approxEqual(parsed.value, ex3.value, 1e-7, 1e-10);
+  const sciFormOk = (parsed.form !== "dec") && isScientificMantissa(parsed.mantissa);
+
+  if(sameValue && !sciFormOk){
+    tries3++;
+    if(tries3===1){
+      setFeedback(fb,"bad",`<b>${t("incorrect")}</b> ${t("correctButNotSci")} ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t3", false);
+      showTab3Steps();
+    }
+    return;
+  }
+
+  if(!(sameValue && sciFormOk)){
+    tries3++;
+    if(tries3===1){
+      setFeedback(fb,"bad",`<b>${t("incorrect")}</b> ${t("tryAgain")}`);
+    }else{
+      addBad();
+      setCheckEnabled("t3", false);
+      showTab3Steps();
+    }
+    return;
+  }
+
+  addOk();
+  setCheckEnabled("t3", false);
+  setFeedback(fb,"good",`<b>${t("correct")}</b> \\(${fmtSci(ex3.goodA, ex3.goodN, 4)}\\)`);
+  tries3 = 0;
+}
+
+function showTab3Steps(){
+  const fb = document.getElementById("t3Feedback");
+  if(!ex3) return;
+
+  const A = ex3.A, B = ex3.B;
+  const op = ex3.op;
+
+  let rawMant, rawExp, line1, line2;
+
+  if(op==="mul"){
+    rawMant = A.a * B.a;
+    rawExp  = A.n + B.n;
+    line1 = `\\(${A.a}\\cdot10^{${A.n}}\\times${B.a}\\cdot10^{${B.n}} = (${A.a}\\times${B.a})\\cdot10^{${A.n}+${B.n}}\\)`;
+    line2 = `\\(= ${roundTo(rawMant,4)}\\cdot10^{${rawExp}}\\)`;
+  }else{
+    rawMant = A.a / B.a;
+    rawExp  = A.n - B.n;
+    line1 = `\\(${A.a}\\cdot10^{${A.n}}\\div${B.a}\\cdot10^{${B.n}} = (${A.a}\\div${B.a})\\cdot10^{${A.n}-${B.n}}\\)`;
+    line2 = `\\(= ${roundTo(rawMant,4)}\\cdot10^{${rawExp}}\\)`;
+  }
+
+  let a = rawMant, n = rawExp;
+  let norm = [];
+  let sign = (a<0) ? -1 : 1;
+  a = Math.abs(a);
+
+  for(let k=0;k<8;k++){
+    if(a===0) break;
+    if(a>=10){ a/=10; n+=1; norm.push(`\\(= ${roundTo(sign*a,4)}\\cdot10^{${n}}\\)`); continue; }
+    if(a<1){ a*=10; n-=1; norm.push(`\\(= ${roundTo(sign*a,4)}\\cdot10^{${n}}\\)`); continue; }
+    break;
+  }
+
+  const final = `\\(\\Rightarrow ${fmtSci(ex3.goodA, ex3.goodN, 4)}\\)`;
+  setFeedback(fb,"good",`<b>${t("fullSteps")}</b><br/>${line1}<br/>${line2}<br/>${norm.length ? norm.join("<br/>")+"<br/>" : ""}${final}`);
+}
+
+/* =========================
+   MANTISAS
+========================= */
+function parseMantissaOnly(txt){
+  const s = (txt ?? "").trim().replace(/\s+/g,"").replace(/,/g,".");
+  if(!s) return {ok:false};
+  const v = Number(s);
+  if(!isFinite(v)) return {ok:false};
+  return {ok:true, value:v};
+}
+function updateMantRes(text){
+  document.getElementById("mantRes").textContent = text;
+}
+function doMantCalc(){
+  if(!mantUserOp){
+    updateMantRes(t("mantPickMsg"));
+    return;
+  }
+  const a = parseMantissaOnly(document.getElementById("mantA").value);
+  const b = parseMantissaOnly(document.getElementById("mantB").value);
+  if(!a.ok || !b.ok){ updateMantRes(t("mantErr")); return; }
+
+  let res;
+  if(mantUserOp === "div"){
+    if(b.value === 0){ updateMantRes(t("mantErr")); return; }
+    res = a.value / b.value;
+  }else{
+    res = a.value * b.value;
+  }
+  res = roundTo(res, 6);
+  updateMantRes(String(res).replace(".", ","));
+}
+async function copyMantRes(){
+  const v = document.getElementById("mantRes").textContent;
+  if(!v || v==="—" || v===t("mantErr") || v===t("mantPickMsg")) return;
+  try{
+    await navigator.clipboard.writeText(v.replace(" ✓",""));
+    updateMantRes(v.replace(" ✓","") + " ✓");
+    setTimeout(()=>updateMantRes(v.replace(" ✓","")), 600);
+  }catch(e){}
+}
+function clearMant(){
+  document.getElementById("mantA").value = "";
+  document.getElementById("mantB").value = "";
+  updateMantRes("—");
+  setMantUserOp(null);
+}
+
+/* =========================
+   TECLADO
+========================= */
+function insertAtCursor(input, text){
+  input.focus();
+  const start = input.selectionStart ?? input.value.length;
+  const end = input.selectionEnd ?? input.value.length;
+  const v = input.value;
+  input.value = v.slice(0,start) + text + v.slice(end);
+  const pos = start + text.length;
+  input.setSelectionRange(pos, pos);
+}
+function backspaceAtCursor(input){
+  input.focus();
+  const start = input.selectionStart ?? input.value.length;
+  const end = input.selectionEnd ?? input.value.length;
+  if(start !== end){
+    const v = input.value;
+    input.value = v.slice(0,start) + v.slice(end);
+    input.setSelectionRange(start, start);
+    return;
+  }
+  if(start === 0) return;
+  const v = input.value;
+  input.value = v.slice(0,start-1) + v.slice(start);
+  input.setSelectionRange(start-1, start-1);
+}
+function bindKeyboards(){
+  document.querySelectorAll(".kbdBox").forEach(box=>{
+    const targetId = box.getAttribute("data-kbd-for");
+    box.querySelectorAll(".key").forEach(k=>{
+      k.addEventListener("click", ()=>{
+        const input = document.getElementById(targetId);
+        const val = k.getAttribute("data-k");
+        if(val === "bksp"){ backspaceAtCursor(input); return; }
+        if(val === "clr"){ input.value=""; input.focus(); return; }
+        insertAtCursor(input, val);
+      });
+    });
+  });
+}
+
+/* =========================
+   CLICK ROBUSTO
+========================= */
+function bindSafe(id, handler){
+  const el = document.getElementById(id);
+  let last = 0;
+  const run = ()=>{
+    const now = Date.now();
+    if(now - last < 250) return;
+    last = now;
+    handler();
+  };
+  el.addEventListener("click", run, {passive:true});
+  el.addEventListener("pointerup", run, {passive:true});
+}
+
+/* =========================
+   BOTONES
+========================= */
+bindSafe("btnNew", ()=>{
+  if(currentTab==="t1") genTab1();
+  if(currentTab==="t2") genTab2();
+  if(currentTab==="t3") genTab3();
+});
+bindSafe("btnReset", ()=>{
+  ["t1Answer","t2Answer","t3Answer"].forEach(id=>document.getElementById(id).value="");
+  ["t1Feedback","t2Feedback","t3Feedback"].forEach(id=>{
+    const el = document.getElementById(id);
+    el.className="feedback";
+    el.textContent = t("resetDone");
+    el.dataset.state = "work";
+  });
+  tries1=tries2=tries3=0;
+  clearMant();
+
+  stats.ok = 0; stats.bad = 0;
+  renderStats();
+
+  setCheckEnabled("t1", true);
+  setCheckEnabled("t2", true);
+  setCheckEnabled("t3", true);
+});
+
+document.getElementById("t1Mode").addEventListener("change", ()=>{
+  updateT1ModeHighlight();
+  genTab1();
+});
+
+bindSafe("t1Check", checkTab1);
+bindSafe("t1Show", showTab1);
+bindSafe("t2Check", checkTab2);
+bindSafe("t2Show", showTab2);
+bindSafe("t3Check", checkTab3);
+bindSafe("t3Show", showTab3Steps);
+
+bindSafe("mantDo", doMantCalc);
+bindSafe("mantCopy", copyMantRes);
+bindSafe("mantClear", clearMant);
+
+document.getElementById("mantPickMul").addEventListener("click", ()=>setMantUserOp("mul"));
+document.getElementById("mantPickDiv").addEventListener("click", ()=>setMantUserOp("div"));
+
+/* Enter -> comprobar */
+["t1Answer","t2Answer","t3Answer"].forEach(id=>{
+  document.getElementById(id).addEventListener("keydown", (e)=>{
+    if(e.key==="Enter"){
+      e.preventDefault();
+      if(id==="t1Answer") checkTab1();
+      if(id==="t2Answer") checkTab2();
+      if(id==="t3Answer") checkTab3();
+    }
+  });
+});
+
+/* =========================
+   IDIOMA: botones ES/EN
+========================= */
+document.getElementById("langES").addEventListener("click", ()=>{
+  currentLang = "ES";
+  document.getElementById("langES").classList.add("active");
+  document.getElementById("langEN").classList.remove("active");
+  applyLanguage();
+});
+document.getElementById("langEN").addEventListener("click", ()=>{
+  currentLang = "EN";
+  document.getElementById("langEN").classList.add("active");
+  document.getElementById("langES").classList.remove("active");
+  applyLanguage();
+});
+
+/* =========================
+   INICIO
+========================= */
+updateT1ModeHighlight();
+genTab1(); genTab2(); genTab3();
+bindKeyboards();
+
+document.getElementById("t1Feedback").dataset.state = "start";
+document.getElementById("t2Feedback").dataset.state = "start";
+document.getElementById("t3Feedback").dataset.state = "start";
+
+applyLanguage();
+
+window.addEventListener("load", ()=>{
+  typesetSafe();
+  typesetSafe(document.getElementById("theoryBody"));
+});
+document.getElementById("theoryBox").addEventListener("toggle", ()=>{
+  typesetSafe(document.getElementById("theoryBody"));
+});
+</script>
+</body>
+</html>
